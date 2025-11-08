@@ -1,0 +1,88 @@
+import java.util.*;
+class Account{
+    final int accountNumber = 12345678;
+    final String HolderName = "Felix Wayne";
+    protected float balance = 0;
+    Scanner sc = new Scanner(System.in);
+
+    void deposit(){
+        System.out.println("Enter Amount to be Deposited :");
+        float deposit = sc.nextFloat();
+        balance += deposit;
+        System.out.println("The Balance is "+balance);
+    }
+
+    void withdraw(){
+        System.out.println("Enter the Amount to Withdraw");
+        float withdraw = sc.nextFloat();
+        if(balance >= withdraw){
+            balance -= withdraw;
+            System.out.println("The Remaining Balance is "+ balance);
+        }else{
+            System.out.println("Insufficient Balance!");
+        }
+    }
+
+    void showBalance(){
+        System.out.println("Your Current Balance is "+balance);
+    }
+}
+class savingAccount extends Account{
+
+    void applyInterest() {
+        float interest = (balance * 5 )/100;
+        balance += interest;
+        System.out.println("Interest is Added :"+balance);
+    }
+}
+class currentAccount extends Account{
+    float overDraftLimit = 500;
+    Scanner sc = new Scanner(System.in);
+
+    void withdraw(){
+        System.out.println("Enter the Amount to Withdraw :");
+        float withdraw = sc.nextFloat();
+        if(withdraw <= balance+overDraftLimit){
+            balance -= withdraw;
+            System.out.println("Remaining Balance :"+balance);
+            if(balance<0){
+                System.out.println("you are in overdraft! "+(balance)+" used");
+            }
+        }
+        else{
+            System.out.println("Limit Reached!");
+        }
+    }
+}
+class Main{
+     public static void main(String[] args){
+        Account acc = new Account();
+        Scanner sc  = new Scanner(System.in);
+        System.out.println("Enter the Number to choose Account (1.savings Account, 2.Current Account) :");
+        int choice = sc.nextInt();
+        if(choice == 1)  acc = new savingAccount();
+        else if(choice == 2) acc = new currentAccount();
+        else System.out.println("Invalid Option");
+
+        while(true){
+            System.out.println("\nEnter any Option 1.Show Balance 2.Deposit 3.Withdraw 4.ApplyInterest(if Saving Account) 5.Exit");
+            int opt = sc.nextInt();
+
+            switch(opt) {
+                case 1 -> acc.showBalance();
+                case 2 -> acc.deposit();
+                case 3 -> acc.withdraw();
+                case 4 -> {
+                    if (acc instanceof savingAccount) {
+                        ((savingAccount) acc).applyInterest();
+                    } else System.out.println("Current Account is Not Applicable for Interest!");
+                }
+                case 5 -> {
+                    System.out.println("Have a Great Day");
+                    System.exit(0);
+                }
+                default -> System.out.println("Invalid Option");
+            }
+        }
+     }
+}
